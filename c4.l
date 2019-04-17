@@ -7,7 +7,7 @@ void yyerror(char *);
 
 %%
 
-[a-z]       { 
+[a-z]       {
                 yylval.sIndex = *yytext - 'a';
                 return VARIABLE;
             }
@@ -17,12 +17,17 @@ void yyerror(char *);
                 return INTEGER;
             }
 
+'[a-z]'     {
+                yylval.cValue = *(yytext+1);
+                return CHAR;
+            }
+
 [1-9][0-9]* {
                 yylval.iValue = atoi(yytext);
                 return INTEGER;
             }
 
-[-()<>=+*/;{}.%] {
+[-()<>=+*/;{}.%'] {
                 return *yytext;
              }
 

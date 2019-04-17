@@ -19,11 +19,13 @@ int sym[26];                    /* symbol table */
 
 %union {
     int iValue;                 /* integer value */
-    char sIndex;                /* symbol table index */
+    char sIndex;                /* symbol table index VARIABLE */
     nodeType *nPtr;             /* node pointer */
+    char cValue;                /* char value */
 };
 
 %token <iValue> INTEGER
+%token <cValue> CHAR
 %token <sIndex> VARIABLE
 %token FOR WHILE IF PRINT READ
 %nonassoc IFX
@@ -70,6 +72,10 @@ stmt_list:
 
 expr:
           INTEGER               { $$ = con($1); }
+        | CHAR                  {
+                                  printf("encounter a char!\n");
+                                  $$ = con($1);
+                                }
         | VARIABLE              { $$ = id($1); }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
         | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
@@ -92,6 +98,7 @@ expr:
 
 #define SIZEOF_NODETYPE ((char *)&p->con - (char *)p)
 
+/* struct a node of constant */
 nodeType *con(int value) {
     nodeType *p;
     size_t nodeSize;
