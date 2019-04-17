@@ -10,7 +10,7 @@ typedef struct{
 }charNodeType;
 
 typedef struct{
-    int *value;
+    int addr;
 }strNodeType;
 
 /* identifiers */
@@ -34,6 +34,7 @@ typedef struct nodeTypeTag {
         // conNodeType con;        /* constants */
         intNodeType Int;
         charNodeType Char;
+        strNodeType Str;
         idNodeType id;          /* identifiers */
         oprNodeType opr;        /* operators */
     };

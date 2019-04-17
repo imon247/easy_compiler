@@ -9,8 +9,9 @@
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(int i);
 nodeType *con(int value);
-nodeType *conInt(int value);
-nodeType *conChar(char value);
+nodeType *conInt(int value);    /* newly added struct a node for int constant */
+nodeType *conChar(char value);  /* newly added struct a node for char constant */
+nodeType *conStr(char *value);  /* newly added struct a node for string constant */
 void freeNode(nodeType *p);
 int ex(nodeType *p);
 int yylex(void);
@@ -23,11 +24,13 @@ int sym[26];                    /* symbol table */
     int iValue;                 /* integer value */
     char sIndex;                /* symbol table index VARIABLE */
     nodeType *nPtr;             /* node pointer */
-    char cValue;                /* char value */
+    char cValue;                /* newly added char value */
+    char *strValue;             /* newly added str value */
 };
 
 %token <iValue> INTEGER
-%token <cValue> CHAR
+%token <cValue> CHAR            /* newly added char */
+%token <strValue> STRING           /* newly added str */
 %token <sIndex> VARIABLE
 %token FOR WHILE IF PRINT READ
 %nonassoc IFX
@@ -57,10 +60,10 @@ stmt:
           ';'                            { $$ = opr(';', 2, NULL, NULL); }
         | expr ';'                       { $$ = $1; }
         | PRINT expr ';'                 { $$ = opr(PRINT, 1, $2); }
-	| READ VARIABLE ';'		 { $$ = opr(READ, 1, id($2)); }
+	      | READ VARIABLE ';'		 { $$ = opr(READ, 1, id($2)); }
         | VARIABLE '=' expr ';'          { $$ = opr('=', 2, id($1), $3); }
-	| FOR '(' stmt stmt stmt ')' stmt { $$ = opr(FOR, 4, $3, $4,
-$5, $7); }
+	      | FOR '(' stmt stmt stmt ')' stmt { $$ = opr(FOR, 4, $3, $4,
+                                            $5, $7); }
         | WHILE '(' expr ')' stmt        { $$ = opr(WHILE, 2, $3, $5); }
         | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
         | IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
@@ -78,6 +81,10 @@ expr:
                                   printf("encounter a char!\n");
                                   $$ = conChar($1);
                                 }
+        | STRING                {
+                                  printf("encounter a string!\n");
+                                  $$ = conStr($1);
+                                }
         | VARIABLE              { $$ = id($1); }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
         | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
@@ -91,8 +98,8 @@ expr:
         | expr LE expr          { $$ = opr(LE, 2, $1, $3); }
         | expr NE expr          { $$ = opr(NE, 2, $1, $3); }
         | expr EQ expr          { $$ = opr(EQ, 2, $1, $3); }
-	| expr AND expr		{ $$ = opr(AND, 2, $1, $3); }
-	| expr OR expr		{ $$ = opr(OR, 2, $1, $3); }
+	      | expr AND expr		      { $$ = opr(AND, 2, $1, $3); }
+	      | expr OR expr		      { $$ = opr(OR, 2, $1, $3); }
         | '(' expr ')'          { $$ = $2; }
         ;
 
@@ -117,6 +124,7 @@ nodeType *conInt(int value) {
     return p;
 }
 
+/* newly added struct a node of char */
 nodeType *conChar(char value){
     nodeType *p;
     size_t nodeSize;
@@ -130,7 +138,19 @@ nodeType *conChar(char value){
     return p;
 }
 
+/* newly added struct a node of string */
+nodeType *conStr(char *value){
+    nodeType *p;
+    size_t nodeSize;
 
+    nodeSize = SIZEOF_NODETYPE + sizeof(strNodeType);
+    if((p=malloc(nodeSize)) == NULL)
+        yyerror("out of memory");
+    p->type = typeStr;
+    p->Str.addr = (int)value;   /* the last few bits of the address, starting from the base of the heap */
+
+    return p;
+}
 
 nodeType *id(int i) {
     nodeType *p;

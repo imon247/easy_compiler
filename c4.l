@@ -22,6 +22,12 @@ void yyerror(char *);
                 return CHAR;
             }
 
+
+\"[a-z]*\"    {
+                yylval.strValue = yytext;
+                return STRING;
+            }
+
 [1-9][0-9]* {
                 yylval.iValue = atoi(yytext);
                 return INTEGER;

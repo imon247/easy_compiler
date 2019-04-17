@@ -9,6 +9,7 @@ int ex(nodeType *p) {
     // case typeCon:       return p->con.value;
     case typeInt:       return p->Int.value;
     case typeChar:      return p->Char.value;
+    case typeStr:       return p->Str.addr;
     case typeId:        return sym[p->id.i];
     case typeOpr:
         switch(p->opr.oper) {

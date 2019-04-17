@@ -41,56 +41,59 @@
    enum yytokentype {
      INTEGER = 258,
      CHAR = 259,
-     VARIABLE = 260,
-     FOR = 261,
-     WHILE = 262,
-     IF = 263,
-     PRINT = 264,
-     READ = 265,
-     IFX = 266,
-     ELSE = 267,
-     OR = 268,
-     AND = 269,
-     NE = 270,
-     EQ = 271,
-     LE = 272,
-     GE = 273,
-     UMINUS = 274
+     STRING = 260,
+     VARIABLE = 261,
+     FOR = 262,
+     WHILE = 263,
+     IF = 264,
+     PRINT = 265,
+     READ = 266,
+     IFX = 267,
+     ELSE = 268,
+     OR = 269,
+     AND = 270,
+     NE = 271,
+     EQ = 272,
+     LE = 273,
+     GE = 274,
+     UMINUS = 275
    };
 #endif
 /* Tokens.  */
 #define INTEGER 258
 #define CHAR 259
-#define VARIABLE 260
-#define FOR 261
-#define WHILE 262
-#define IF 263
-#define PRINT 264
-#define READ 265
-#define IFX 266
-#define ELSE 267
-#define OR 268
-#define AND 269
-#define NE 270
-#define EQ 271
-#define LE 272
-#define GE 273
-#define UMINUS 274
+#define STRING 260
+#define VARIABLE 261
+#define FOR 262
+#define WHILE 263
+#define IF 264
+#define PRINT 265
+#define READ 266
+#define IFX 267
+#define ELSE 268
+#define OR 269
+#define AND 270
+#define NE 271
+#define EQ 272
+#define LE 273
+#define GE 274
+#define UMINUS 275
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 22 "c4.y"
+#line 23 "c4.y"
 {
     int iValue;                 /* integer value */
     char sIndex;                /* symbol table index VARIABLE */
     nodeType *nPtr;             /* node pointer */
-    char cValue;                /* char value */
+    char cValue;                /* newly added char value */
+    char *strValue;             /* newly added str value */
 }
 /* Line 1529 of yacc.c.  */
-#line 94 "y.tab.h"
+#line 97 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
