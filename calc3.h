@@ -1,9 +1,17 @@
-typedef enum { typeCon, typeId, typeOpr } nodeEnum;
+typedef enum { typeInt, typeChar, typeStr, typeId, typeOpr } nodeEnum;
 
 /* constants */
 typedef struct {
     int value;                  /* value of constant */
-} conNodeType;
+} intNodeType;
+
+typedef struct{
+    char value;
+}charNodeType;
+
+typedef struct{
+    int *value;
+}strNodeType;
 
 /* identifiers */
 typedef struct {
@@ -23,7 +31,9 @@ typedef struct nodeTypeTag {
     /* union must be last entry in nodeType */
     /* because operNodeType may dynamically increase */
     union {
-        conNodeType con;        /* constants */
+        // conNodeType con;        /* constants */
+        intNodeType Int;
+        charNodeType Char;
         idNodeType id;          /* identifiers */
         oprNodeType opr;        /* operators */
     };

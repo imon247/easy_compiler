@@ -82,7 +82,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 20 "c4.y"
+#line 22 "c4.y"
 {
     int iValue;                 /* integer value */
     char sIndex;                /* symbol table index VARIABLE */

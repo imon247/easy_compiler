@@ -9,6 +9,8 @@
 nodeType *opr(int oper, int nops, ...);
 nodeType *id(int i);
 nodeType *con(int value);
+nodeType *conInt(int value);
+nodeType *conChar(char value);
 void freeNode(nodeType *p);
 int ex(nodeType *p);
 int yylex(void);
@@ -71,10 +73,10 @@ stmt_list:
         ;
 
 expr:
-          INTEGER               { $$ = con($1); }
+          INTEGER               { $$ = conInt($1); }
         | CHAR                  {
                                   printf("encounter a char!\n");
-                                  $$ = con($1);
+                                  $$ = conChar($1);
                                 }
         | VARIABLE              { $$ = id($1); }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
@@ -96,24 +98,39 @@ expr:
 
 %%
 
-#define SIZEOF_NODETYPE ((char *)&p->con - (char *)p)
+#define SIZEOF_NODETYPE ((char *)&p->Int - (char *)p)
 
 /* struct a node of constant */
-nodeType *con(int value) {
+nodeType *conInt(int value) {
     nodeType *p;
     size_t nodeSize;
 
     /* allocate node */
-    nodeSize = SIZEOF_NODETYPE + sizeof(conNodeType);
+    nodeSize = SIZEOF_NODETYPE + sizeof(intNodeType);
     if ((p = malloc(nodeSize)) == NULL)
         yyerror("out of memory");
 
     /* copy information */
-    p->type = typeCon;
-    p->con.value = value;
+    p->type = typeInt;
+    p->Int.value = value;
 
     return p;
 }
+
+nodeType *conChar(char value){
+    nodeType *p;
+    size_t nodeSize;
+
+    nodeSize = SIZEOF_NODETYPE + sizeof(charNodeType);
+    if((p=malloc(nodeSize)) == NULL)
+        yyerror("out of memory");
+    p->type = typeChar;
+    p->Char.value = value;
+
+    return p;
+}
+
+
 
 nodeType *id(int i) {
     nodeType *p;

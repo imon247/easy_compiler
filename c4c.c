@@ -12,8 +12,14 @@ int ex(nodeType *p) {
 
     if (!p) return 0;
     switch(p->type) {
-    case typeCon:
-        printf("\tpush\t%d\n", p->con.value);
+    // case typeCon:
+    //     printf("\tpush\t%d\n", p->con.value);
+    //     break;
+    case typeInt:
+        printf("\tpush\t%d\n", p->Int.value);
+        break;
+    case typeChar:
+        printf("\tpush\t%c\n", p->Char.value);
         break;
     case typeId:
         printf("\tpush\t%c\n", p->id.i + 'a');

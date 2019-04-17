@@ -6,7 +6,9 @@ int ex(nodeType *p) {
     int i;
     if (!p) return 0;
     switch(p->type) {
-    case typeCon:       printf(); return p->con.value;
+    // case typeCon:       return p->con.value;
+    case typeInt:       return p->Int.value;
+    case typeChar:      return p->Char.value;
     case typeId:        return sym[p->id.i];
     case typeOpr:
         switch(p->opr.oper) {
@@ -24,6 +26,7 @@ int ex(nodeType *p) {
                             return 0;
             case PRINT:
                             // printf("%d\n")
+                            // if()
                             printf("%d\n", ex(p->opr.op[0]));
                             return 0;
 	          case READ:	printf("? "); scanf("%d", &i);
