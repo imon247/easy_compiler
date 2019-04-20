@@ -114,12 +114,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdarg.h>
 #include "calc3.h"
 
 
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
+/* nodeType *id(int i); */
 nodeType *id(int i);
 nodeType *con(int value);
 nodeType *conInt(int value);    /* newly added struct a node for int constant */
@@ -153,16 +155,17 @@ int sym[26];                    /* symbol table */
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 23 "c4.y"
+#line 25 "c4.y"
 {
     int iValue;                 /* integer value */
-    char sIndex;                /* symbol table index VARIABLE */
+    char sIndex;                 /*symbol table index VARIABLE */
+    /* char *strIndex;                new symbol table index VARIABLE */
     nodeType *nPtr;             /* node pointer */
     char cValue;                /* newly added char value */
     char *strValue;             /* newly added str value */
 }
 /* Line 193 of yacc.c.  */
-#line 166 "y.tab.c"
+#line 169 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -175,7 +178,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 179 "y.tab.c"
+#line 182 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -474,10 +477,10 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    51,    51,    55,    56,    60,    61,    62,    63,    64,
-      65,    67,    68,    69,    70,    74,    75,    79,    80,    84,
-      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
-      98,    99,   100,   101,   102,   103
+       0,    55,    55,    59,    60,    64,    65,    66,    67,    68,
+      69,    71,    72,    73,    74,    79,    80,    84,    85,    89,
+      93,    96,    97,    98,    99,   100,   101,   102,   103,   104,
+     105,   106,   107,   108,   109,   110
 };
 #endif
 
@@ -1449,180 +1452,182 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 51 "c4.y"
-    { exit(0); }
+#line 55 "c4.y"
+    { exit(0); /* remove the exit so that when scanning a function it will not exit */}
     break;
 
   case 3:
-#line 55 "c4.y"
+#line 59 "c4.y"
     { ex((yyvsp[(2) - (2)].nPtr)); freeNode((yyvsp[(2) - (2)].nPtr)); }
     break;
 
   case 5:
-#line 60 "c4.y"
+#line 64 "c4.y"
     { (yyval.nPtr) = opr(';', 2, NULL, NULL); }
     break;
 
   case 6:
-#line 61 "c4.y"
+#line 65 "c4.y"
     { (yyval.nPtr) = (yyvsp[(1) - (2)].nPtr); }
     break;
 
   case 7:
-#line 62 "c4.y"
+#line 66 "c4.y"
     { (yyval.nPtr) = opr(PRINT, 1, (yyvsp[(2) - (3)].nPtr)); }
     break;
 
   case 8:
-#line 63 "c4.y"
+#line 67 "c4.y"
     { (yyval.nPtr) = opr(READ, 1, id((yyvsp[(2) - (3)].sIndex))); }
     break;
 
   case 9:
-#line 64 "c4.y"
-    { (yyval.nPtr) = opr('=', 2, id((yyvsp[(1) - (4)].sIndex)), (yyvsp[(3) - (4)].nPtr)); }
+#line 68 "c4.y"
+    { (yyval.nPtr) = opr('=', 2, id((yyvsp[(1) - (4)].sIndex)), (yyvsp[(3) - (4)].nPtr)); /* variable assignment */}
     break;
 
   case 10:
-#line 65 "c4.y"
+#line 69 "c4.y"
     { (yyval.nPtr) = opr(FOR, 4, (yyvsp[(3) - (7)].nPtr), (yyvsp[(4) - (7)].nPtr),
                                             (yyvsp[(5) - (7)].nPtr), (yyvsp[(7) - (7)].nPtr)); }
     break;
 
   case 11:
-#line 67 "c4.y"
+#line 71 "c4.y"
     { (yyval.nPtr) = opr(WHILE, 2, (yyvsp[(3) - (5)].nPtr), (yyvsp[(5) - (5)].nPtr)); }
     break;
 
   case 12:
-#line 68 "c4.y"
+#line 72 "c4.y"
     { (yyval.nPtr) = opr(IF, 2, (yyvsp[(3) - (5)].nPtr), (yyvsp[(5) - (5)].nPtr)); }
     break;
 
   case 13:
-#line 69 "c4.y"
+#line 73 "c4.y"
     { (yyval.nPtr) = opr(IF, 3, (yyvsp[(3) - (7)].nPtr), (yyvsp[(5) - (7)].nPtr), (yyvsp[(7) - (7)].nPtr)); }
     break;
 
   case 14:
-#line 70 "c4.y"
+#line 74 "c4.y"
     { (yyval.nPtr) = (yyvsp[(2) - (3)].nPtr); }
     break;
 
   case 15:
-#line 74 "c4.y"
+#line 79 "c4.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); }
     break;
 
   case 16:
-#line 75 "c4.y"
+#line 80 "c4.y"
     { (yyval.nPtr) = opr(';', 2, (yyvsp[(1) - (2)].nPtr), (yyvsp[(2) - (2)].nPtr)); }
     break;
 
   case 17:
-#line 79 "c4.y"
+#line 84 "c4.y"
     { (yyval.nPtr) = conInt((yyvsp[(1) - (1)].iValue)); }
     break;
 
   case 18:
-#line 80 "c4.y"
+#line 85 "c4.y"
     {
-                                  printf("encounter a char!\n");
+                                  printf("encounter a char: %c\n", (yyvsp[(1) - (1)].cValue));
                                   (yyval.nPtr) = conChar((yyvsp[(1) - (1)].cValue));
                                 }
     break;
 
   case 19:
-#line 84 "c4.y"
+#line 89 "c4.y"
     {
-                                  printf("encounter a string!\n");
+                                  printf("encounter a string: %s\n", (yyvsp[(1) - (1)].strValue));
                                   (yyval.nPtr) = conStr((yyvsp[(1) - (1)].strValue));
                                 }
     break;
 
   case 20:
-#line 88 "c4.y"
-    { (yyval.nPtr) = id((yyvsp[(1) - (1)].sIndex)); }
+#line 93 "c4.y"
+    {
+                                  printf("encounter a variable: %d\n", (yyvsp[(1) - (1)].sIndex));
+                                  (yyval.nPtr) = id((yyvsp[(1) - (1)].sIndex)); }
     break;
 
   case 21:
-#line 89 "c4.y"
+#line 96 "c4.y"
     { (yyval.nPtr) = opr(UMINUS, 1, (yyvsp[(2) - (2)].nPtr)); }
     break;
 
   case 22:
-#line 90 "c4.y"
+#line 97 "c4.y"
     { (yyval.nPtr) = opr('+', 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 23:
-#line 91 "c4.y"
+#line 98 "c4.y"
     { (yyval.nPtr) = opr('-', 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 24:
-#line 92 "c4.y"
+#line 99 "c4.y"
     { (yyval.nPtr) = opr('*', 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 25:
-#line 93 "c4.y"
+#line 100 "c4.y"
     { (yyval.nPtr) = opr('%', 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 26:
-#line 94 "c4.y"
+#line 101 "c4.y"
     { (yyval.nPtr) = opr('/', 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 27:
-#line 95 "c4.y"
+#line 102 "c4.y"
     { (yyval.nPtr) = opr('<', 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 28:
-#line 96 "c4.y"
+#line 103 "c4.y"
     { (yyval.nPtr) = opr('>', 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 29:
-#line 97 "c4.y"
+#line 104 "c4.y"
     { (yyval.nPtr) = opr(GE, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 30:
-#line 98 "c4.y"
+#line 105 "c4.y"
     { (yyval.nPtr) = opr(LE, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 31:
-#line 99 "c4.y"
+#line 106 "c4.y"
     { (yyval.nPtr) = opr(NE, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 32:
-#line 100 "c4.y"
+#line 107 "c4.y"
     { (yyval.nPtr) = opr(EQ, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 33:
-#line 101 "c4.y"
+#line 108 "c4.y"
     { (yyval.nPtr) = opr(AND, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 34:
-#line 102 "c4.y"
+#line 109 "c4.y"
     { (yyval.nPtr) = opr(OR, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 35:
-#line 103 "c4.y"
+#line 110 "c4.y"
     { (yyval.nPtr) = (yyvsp[(2) - (3)].nPtr); }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1626 "y.tab.c"
+#line 1631 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1836,7 +1841,7 @@ yyreturn:
 }
 
 
-#line 106 "c4.y"
+#line 113 "c4.y"
 
 
 #define SIZEOF_NODETYPE ((char *)&p->Int - (char *)p)
@@ -1876,33 +1881,56 @@ nodeType *conChar(char value){
 nodeType *conStr(char *value){
     nodeType *p;
     size_t nodeSize;
+    char *s;
 
     nodeSize = SIZEOF_NODETYPE + sizeof(strNodeType);
     if((p=malloc(nodeSize)) == NULL)
         yyerror("out of memory");
+    if((s=malloc(sizeof(char)*strlen(value))) == NULL)
+        yyerror("out of memory");
     p->type = typeStr;
-    p->Str.addr = (int)value;   /* the last few bits of the address, starting from the base of the heap */
+    p->Str.addr = (int)s;   /* the last few bits of the address, starting from the base of the heap */
 
     return p;
 }
 
-nodeType *id(int i) {
+ nodeType *id(int i) {
     nodeType *p;
     size_t nodeSize;
 
-    /* allocate node */
+     // allocate node
     nodeSize = SIZEOF_NODETYPE + sizeof(idNodeType);
     if ((p = malloc(nodeSize)) == NULL)
         yyerror("out of memory");
 
-    /* copy information */
+     // copy information
     p->type = typeId;
-    p->id.i = i;
+    p->id.index = i;
 
     return p;
 }
+/*
+nodeType *id(char *value){
 
+    nodeType *p;
+    size_t nodeSize;
+    char *s;
+
+    nodeSize = SIZEOF_NODETYPE + sizeof(idNodeType);
+    if((p = malloc(nodeSize)) == NULL)
+        yyerror("out of memory");
+    if((s=malloc(sizeof(char)*strlen(value))) == NULL)
+        yyerror("out of memory");
+    p->type = typeId;
+    p->id.addr = (int)s;
+
+    return p;
+}
+*/
 nodeType *opr(int oper, int nops, ...) {
+    if(oper==PRINT){
+        printf("want to print!\n");
+    }
     va_list ap;
     nodeType *p;
     size_t nodeSize;
@@ -1920,7 +1948,7 @@ nodeType *opr(int oper, int nops, ...) {
     p->opr.nops = nops;
     va_start(ap, nops);
     for (i = 0; i < nops; i++)
-        p->opr.op[i] = va_arg(ap, nodeType*);
+        p->opr.op[i] = va_arg(ap, nodeType*);   // append argument to oprerand list of p->opr
     va_end(ap);
     return p;
 }

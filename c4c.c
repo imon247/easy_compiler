@@ -18,11 +18,17 @@ int ex(nodeType *p) {
     case typeInt:
         printf("\tpush\t%d\n", p->Int.value);
         break;
+    case typeId:
+        // todo: push the content of the variable according to its index!!!
+        break;
     case typeChar:
         printf("\tpush\t%c\n", p->Char.value);
         break;
-    case typeId:
-        printf("\tpush\t%c\n", p->id.i + 'a');
+    // case typeId:
+    //     printf("\tpush\t%d\n", p->id.addr);
+    //     break;
+    case typeStr:
+        printf("\tpush\t%d\n", p->Str.addr);
         break;
     case typeOpr:
         switch(p->opr.oper) {
@@ -63,15 +69,18 @@ int ex(nodeType *p) {
             break;
       	case READ:
       	    printf("\tread\n");
-                  printf("\tpop\t%c\n", p->opr.op[0]->id.i + 'a');
+            printf("\tpop\t%d\n", p->opr.op[0]->id.index);
       	    break;
         case PRINT:
+            // if(p->type==typeInt){
+            //   printf("\tputi(%)\n")
+            // }
             ex(p->opr.op[0]);
             printf("\tprint\n");
             break;
         case '=':
             ex(p->opr.op[1]);
-            printf("\tpop\t%c\n", p->opr.op[0]->id.i + 'a');
+            // printf("\tpop\t%d\n", p->opr.op[0]->id.index + 'a');
             break;
         case UMINUS:
             ex(p->opr.op[0]);

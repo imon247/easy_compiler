@@ -1,12 +1,14 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdarg.h>
 #include "calc3.h"
 
 
 /* prototypes */
 nodeType *opr(int oper, int nops, ...);
+/* nodeType *id(int i); */
 nodeType *id(int i);
 nodeType *con(int value);
 nodeType *conInt(int value);    /* newly added struct a node for int constant */
@@ -22,7 +24,8 @@ int sym[26];                    /* symbol table */
 
 %union {
     int iValue;                 /* integer value */
-    char sIndex;                /* symbol table index VARIABLE */
+    char sIndex;                 /*symbol table index VARIABLE */
+    /* char *strIndex;                new symbol table index VARIABLE */
     nodeType *nPtr;             /* node pointer */
     char cValue;                /* newly added char value */
     char *strValue;             /* newly added str value */
@@ -32,6 +35,7 @@ int sym[26];                    /* symbol table */
 %token <cValue> CHAR            /* newly added char */
 %token <strValue> STRING           /* newly added str */
 %token <sIndex> VARIABLE
+/* %token <strIndex> VARIABLE */
 %token FOR WHILE IF PRINT READ
 %nonassoc IFX
 %nonassoc ELSE
@@ -48,7 +52,7 @@ int sym[26];                    /* symbol table */
 %%
 
 program:
-        function                { exit(0); }
+function                { exit(0); /* remove the exit so that when scanning a function it will not exit */}
         ;
 
 function:
@@ -60,14 +64,15 @@ stmt:
           ';'                            { $$ = opr(';', 2, NULL, NULL); }
         | expr ';'                       { $$ = $1; }
         | PRINT expr ';'                 { $$ = opr(PRINT, 1, $2); }
-	      | READ VARIABLE ';'		 { $$ = opr(READ, 1, id($2)); }
-        | VARIABLE '=' expr ';'          { $$ = opr('=', 2, id($1), $3); }
+	      | READ VARIABLE ';'		           { $$ = opr(READ, 1, id($2)); }
+        | VARIABLE '=' expr ';'          { $$ = opr('=', 2, id($1), $3); /* variable assignment */}
 	      | FOR '(' stmt stmt stmt ')' stmt { $$ = opr(FOR, 4, $3, $4,
                                             $5, $7); }
         | WHILE '(' expr ')' stmt        { $$ = opr(WHILE, 2, $3, $5); }
         | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
         | IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
         | '{' stmt_list '}'              { $$ = $2; }
+        /*| PROC VARIABLE '(' vars ')' stmt {$$ = opr(PROC, 3, id($2), $4, $6);} handling function declaration */
         ;
 
 stmt_list:
@@ -75,17 +80,19 @@ stmt_list:
         | stmt_list stmt        { $$ = opr(';', 2, $1, $2); }
         ;
 
-expr:
+expr:               /* add function call for expression! */
           INTEGER               { $$ = conInt($1); }
         | CHAR                  {
-                                  printf("encounter a char!\n");
+                                  printf("encounter a char: %c\n", $1);
                                   $$ = conChar($1);
                                 }
         | STRING                {
-                                  printf("encounter a string!\n");
+                                  printf("encounter a string: %s\n", $1);
                                   $$ = conStr($1);
                                 }
-        | VARIABLE              { $$ = id($1); }
+        | VARIABLE              {
+                                  printf("encounter a variable: %d\n", $1);
+                                  $$ = id($1); }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
         | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
         | expr '-' expr         { $$ = opr('-', 2, $1, $3); }
@@ -142,33 +149,56 @@ nodeType *conChar(char value){
 nodeType *conStr(char *value){
     nodeType *p;
     size_t nodeSize;
+    char *s;
 
     nodeSize = SIZEOF_NODETYPE + sizeof(strNodeType);
     if((p=malloc(nodeSize)) == NULL)
         yyerror("out of memory");
+    if((s=malloc(sizeof(char)*strlen(value))) == NULL)
+        yyerror("out of memory");
     p->type = typeStr;
-    p->Str.addr = (int)value;   /* the last few bits of the address, starting from the base of the heap */
+    p->Str.addr = (int)s;   /* the last few bits of the address, starting from the base of the heap */
 
     return p;
 }
 
-nodeType *id(int i) {
+ nodeType *id(int i) {
     nodeType *p;
     size_t nodeSize;
 
-    /* allocate node */
+     // allocate node
     nodeSize = SIZEOF_NODETYPE + sizeof(idNodeType);
     if ((p = malloc(nodeSize)) == NULL)
         yyerror("out of memory");
 
-    /* copy information */
+     // copy information
     p->type = typeId;
-    p->id.i = i;
+    p->id.index = i;
 
     return p;
 }
+/*
+nodeType *id(char *value){
 
+    nodeType *p;
+    size_t nodeSize;
+    char *s;
+
+    nodeSize = SIZEOF_NODETYPE + sizeof(idNodeType);
+    if((p = malloc(nodeSize)) == NULL)
+        yyerror("out of memory");
+    if((s=malloc(sizeof(char)*strlen(value))) == NULL)
+        yyerror("out of memory");
+    p->type = typeId;
+    p->id.addr = (int)s;
+
+    return p;
+}
+*/
 nodeType *opr(int oper, int nops, ...) {
+    if(oper==PRINT){
+        printf("want to print!\n");
+    }
     va_list ap;
     nodeType *p;
     size_t nodeSize;
@@ -186,7 +216,7 @@ nodeType *opr(int oper, int nops, ...) {
     p->opr.nops = nops;
     va_start(ap, nops);
     for (i = 0; i < nops; i++)
-        p->opr.op[i] = va_arg(ap, nodeType*);
+        p->opr.op[i] = va_arg(ap, nodeType*);   // append argument to oprerand list of p->opr
     va_end(ap);
     return p;
 }

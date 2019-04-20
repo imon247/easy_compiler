@@ -1,5 +1,6 @@
 %{
 #include <stdlib.h>
+#include <string.h>
 #include "calc3.h"
 #include "y.tab.h"
 void yyerror(char *);
@@ -7,10 +8,16 @@ void yyerror(char *);
 
 %%
 
-[a-z]       {
-                yylval.sIndex = *yytext - 'a';
-                return VARIABLE;
+"print"     {
+                return PRINT;
             }
+
+
+[a-zA-Z]+            {
+                        yylval.sIndex = *yytext - 'a';
+                        printf("variable: %s\n", yytext);
+                        return VARIABLE;
+                      }
 
 0           {
                 yylval.iValue = atoi(yytext);
@@ -19,36 +26,28 @@ void yyerror(char *);
 
 '[a-z]'     {
                 yylval.cValue = *(yytext+1);
+                printf("char: %c\n", yylval.cValue);
                 return CHAR;
             }
 
 
-\"[a-z]*\"    {
-                yylval.strValue = yytext;
-                return STRING;
-            }
+\"[a-zA-Z' ']*\"    {
+                        yytext[strlen(yytext)-1] = '\0';
+                        yytext = yytext+1;
+                        yylval.strValue = yytext;
+                        return STRING;
+                    }
 
 [1-9][0-9]* {
                 yylval.iValue = atoi(yytext);
                 return INTEGER;
             }
 
-[-()<>=+*/;{}.%'] {
+[-()<>=+*\/;{}.%\'] {
                 return *yytext;
              }
 
-">="            return GE;
-"<="            return LE;
-"=="            return EQ;
-"!="            return NE;
-"for"		return FOR;
-"while"         return WHILE;
-"if"            return IF;
-"else"          return ELSE;
-"print"         return PRINT;
-"read"		return READ;
-"&&"		return AND;
-"||"		return OR;
+
 
 \/\/.*\n	;	/* skip comments */
 

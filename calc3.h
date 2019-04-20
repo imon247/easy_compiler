@@ -14,9 +14,14 @@ typedef struct{
 }strNodeType;
 
 /* identifiers */
+//typedef struct {
+    // int i;                      /* subscript to sym array */
+// } idNodeType;
+
 typedef struct {
-    int i;                      /* subscript to sym array */
-} idNodeType;
+    int index;
+    // char *vName;
+}idNodeType;
 
 /* operators */
 typedef struct {
