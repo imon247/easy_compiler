@@ -1,14 +1,14 @@
 c4i: lex.yy.c y.tab.c c4i.c
 	gcc -o c4i lex.yy.c y.tab.c c4i.c
 
-c4c: lex.yy.c y.tab.c c4c.c
-	gcc -o c4c lex.yy.c y.tab.c c4c.c
+c6c: lex.yy.c y.tab.c c6c.c
+	gcc -o c6c lex.yy.c y.tab.c c6c.c
 
-lex.yy.c: c4.l
-	flex c4.l
+lex.yy.c: c6.l
+	flex c6.l
 
-y.tab.c: c4.y
-	bison -y -d c4.y
+y.tab.c: c6.y
+	bison -y -d c6.y
 
 sas: sas.c sas.tab.c
 	gcc -o sas sas.c sas.tab.c
@@ -37,8 +37,8 @@ calx.c: calx.l
 calx.tab.c: calx.y
 	bison -d calx.y
 
-cleanc4:
-	$(RM) lex.yy.c y.tab.c y.tab.h c4i c4c
+cleanc6:
+	$(RM) lex.yy.c y.tab.c y.tab.h c4i c6c
 
 cleansas:
 	$(RM) sas.c sas.tab.c sas.tab.h sas

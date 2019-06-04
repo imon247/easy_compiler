@@ -48,15 +48,26 @@
      IF = 264,
      PRINT = 265,
      READ = 266,
-     IFX = 267,
-     ELSE = 268,
-     OR = 269,
-     AND = 270,
-     NE = 271,
-     EQ = 272,
-     LE = 273,
-     GE = 274,
-     UMINUS = 275
+     PROC = 267,
+     RETURN = 268,
+     DECLARE = 269,
+     ARG = 270,
+     ARRAY = 271,
+     A1ELEM = 272,
+     A2ELEM = 273,
+     A3ELEM = 274,
+     ASSIGN_ARR1 = 275,
+     ASSIGN_ARR2 = 276,
+     ASSIGN_ARR3 = 277,
+     IFX = 278,
+     ELSE = 279,
+     OR = 280,
+     AND = 281,
+     NE = 282,
+     EQ = 283,
+     LE = 284,
+     GE = 285,
+     UMINUS = 286
    };
 #endif
 /* Tokens.  */
@@ -69,32 +80,42 @@
 #define IF 264
 #define PRINT 265
 #define READ 266
-#define IFX 267
-#define ELSE 268
-#define OR 269
-#define AND 270
-#define NE 271
-#define EQ 272
-#define LE 273
-#define GE 274
-#define UMINUS 275
+#define PROC 267
+#define RETURN 268
+#define DECLARE 269
+#define ARG 270
+#define ARRAY 271
+#define A1ELEM 272
+#define A2ELEM 273
+#define A3ELEM 274
+#define ASSIGN_ARR1 275
+#define ASSIGN_ARR2 276
+#define ASSIGN_ARR3 277
+#define IFX 278
+#define ELSE 279
+#define OR 280
+#define AND 281
+#define NE 282
+#define EQ 283
+#define LE 284
+#define GE 285
+#define UMINUS 286
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 25 "c4.y"
+#line 31 "c5.y"
 {
     int iValue;                 /* integer value */
-    char sIndex;                 /*symbol table index VARIABLE */
-    /* char *strIndex;                new symbol table index VARIABLE */
+    int sIndex;                 /* symbol table index VARIABLE */
     nodeType *nPtr;             /* node pointer */
     char cValue;                /* newly added char value */
     char *strValue;             /* newly added str value */
 }
 /* Line 1529 of yacc.c.  */
-#line 98 "y.tab.h"
+#line 119 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
